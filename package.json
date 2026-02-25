@@ -1,0 +1,12 @@
+{
+  "name": "notion-rollover",
+  "version": "1.0.0",
+  "description": "Daily rollover script for Notion Master To-Do",
+  "main": "rollover.js",
+  "scripts": {
+    "start": "node rollover.js"
+  },
+  "dependencies": {
+    "@notionhq/client": "^2.2.15"
+  }
+}
