@@ -2,7 +2,7 @@ name: Notion Daily Rollover
 
 on:
   schedule:
-    - cron: "59 4 * * *" # 11:59 PM EST daily
+    - cron: "59 4 * * *" # 11:59 PM UTC daily
   workflow_dispatch: # allows manual trigger for testing
 
 jobs:
