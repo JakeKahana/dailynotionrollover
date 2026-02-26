@@ -6,12 +6,10 @@ const DATABASE_ID = process.env.NOTION_DATABASE_ID;
 async function rolloverTasks() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-
   const todayStr = today.toISOString().split("T")[0];
 
-  console.log(`Running rollover for tasks on or before ${todayStr}...`);
+  console.log(`Running rollover for tasks with Do Date = ${todayStr}...`);
 
-  // Query for unchecked tasks with a "Do Date" on or before today
   const response = await notion.databases.query({
     database_id: DATABASE_ID,
     filter: {
@@ -22,26 +20,26 @@ async function rolloverTasks() {
         },
         {
           property: "Do Date",
-          date: { on_or_before: todayStr },
+          date: { equals: todayStr },
         },
       ],
     },
   });
 
   const tasks = response.results;
-  console.log(`Found ${tasks.length} task(s) to roll over.`);
+  console.log(`Found ${tasks.length} task(s) to evaluate.`);
 
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
   const tomorrowStr = tomorrow.toISOString().split("T")[0];
 
   for (const task of tasks) {
-    const title =
-      task.properties.Name?.title?.[0]?.plain_text || "(untitled)";
+    const actionItem =
+      task.properties["Action Item"]?.title?.[0]?.plain_text?.trim() || "";
 
-    // Skip tasks with no title content
-    if (!title || title === "(untitled)") {
-      console.log(`Skipping untitled task ${task.id}`);
+    // Skip tasks where Action Item is blank
+    if (!actionItem) {
+      console.log(`Skipping task with blank Action Item (${task.id})`);
       continue;
     }
 
@@ -54,7 +52,7 @@ async function rolloverTasks() {
       },
     });
 
-    console.log(`Rolled over: "${title}" → ${tomorrowStr}`);
+    console.log(`Rolled over: "${actionItem}" → ${tomorrowStr}`);
   }
 
   console.log("Rollover complete.");
