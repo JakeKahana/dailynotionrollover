@@ -8,7 +8,11 @@ async function rolloverTasks() {
   today.setHours(0, 0, 0, 0);
   const todayStr = today.toISOString().split("T")[0];
 
-  console.log(`Running rollover for tasks with Do Date = ${todayStr}...`);
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().split("T")[0];
+
+  console.log(`Running rollover for tasks with Do Date = ${yesterdayStr}...`);
 
   const response = await notion.databases.query({
     database_id: DATABASE_ID,
@@ -20,7 +24,7 @@ async function rolloverTasks() {
         },
         {
           property: "Do Date",
-          date: { equals: todayStr },
+          date: { equals: yesterdayStr },
         },
       ],
     },
