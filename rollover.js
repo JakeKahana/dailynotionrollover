@@ -51,12 +51,12 @@ async function rolloverTasks() {
       page_id: task.id,
       properties: {
         "Do Date": {
-          date: { start: tomorrowStr },
+          date: { start: todayStr },
         },
       },
     });
 
-    console.log(`Rolled over: "${actionItem}" → ${tomorrowStr}`);
+    console.log(`Rolled over: "${actionItem}" → ${todayStr}`);
   }
 
   console.log("Rollover complete.");
